@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
@@ -73,8 +73,29 @@ const AppHeader = () => {
     loadCippQueue()
   }
 
+  function useInterval(callback, delay, state) {
+    const savedCallback = useRef()
+
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback
+    })
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current()
+      }
+
+      if (delay !== null) {
+        let id = setInterval(tick, delay)
+        return () => clearInterval(id)
+      }
+    }, [delay, state])
+  }
+
   useEffect(() => {
-    if (cippQueueList.isFetching || cippQueueList.isLoading) {
+    if (cippQueueList.isUninitialized && (cippQueueList.isFetching || cippQueueList.isLoading)) {
       setCippQueueExtendedInfo([
         {
           label: 'Fetching recent jobs',
@@ -83,26 +104,41 @@ const AppHeader = () => {
           link: '#',
         },
       ])
-    }
-    if (
-      cippQueueList.isSuccess &&
-      Array.isArray(cippQueueList.data) &&
-      cippQueueList.data.length > 0
-    ) {
-      setCippQueueExtendedInfo(
-        cippQueueList.data?.map((job) => ({
-          label: `${job.Name}`,
-          value: job.Status,
-          link: job.Link,
-          timestamp: job.Timestamp,
-        })),
-      )
     } else {
-      setCippQueueExtendedInfo([
-        { label: 'No jobs to display', value: '', timpestamp: Date(), link: '#' },
-      ])
+      if (
+        cippQueueList.isSuccess &&
+        Array.isArray(cippQueueList.data) &&
+        cippQueueList.data.length > 0
+      ) {
+        setCippQueueExtendedInfo(
+          cippQueueList.data?.map((job) => ({
+            label: `${job.Name}`,
+            value: job.Status,
+            link: job.Link,
+            timestamp: job.Timestamp,
+            percent: job.PercentComplete,
+            progressText: `${job.PercentComplete}%`,
+            detailsObject: job.Tasks,
+          })),
+        )
+      } else {
+        setCippQueueExtendedInfo([
+          { label: 'No jobs to display', value: '', timestamp: Date(), link: '#' },
+        ])
+      }
     }
-  }, [cippQueueList])
+  }, [cippQueueList, setCippQueueExtendedInfo])
+
+  useInterval(
+    async () => {
+      if (cippQueueVisible) {
+        setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
+        getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+      }
+    },
+    5000,
+    cippQueueVisible,
+  )
 
   const SwitchTheme = () => {
     let targetTheme = preferredTheme
