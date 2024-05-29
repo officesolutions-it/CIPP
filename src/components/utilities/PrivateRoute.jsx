@@ -27,7 +27,6 @@ export const PrivateRoute = ({ children, routeType }) => {
     const isAuthenticated =
       roles.includes('admin') ||
       roles.includes('editor') || (roles.includes('readonly') && !error)
-
     const isAdmin = roles.includes('admin')
     if (routeType === 'admin') {
       return !isAdmin ? <Navigate to="/403" /> : children
