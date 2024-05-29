@@ -25,7 +25,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     return <Navigate to={`/login?redirect_uri=${window.location.href}`} />
   } else {
     const isAuthenticated =
-      roles.includes('admin') || roles.includes('editor') || (roles.includes('readonly') && !error)
+      roles.includes('admin') || roles.includes('editor') || roles.includes('standardeditor') || (roles.includes('readonly') && !error)
     const isAdmin = roles.includes('admin')
     if (routeType === 'admin') {
       return !isAdmin ? <Navigate to="/403" /> : children
