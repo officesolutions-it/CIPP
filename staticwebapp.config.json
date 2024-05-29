@@ -40,7 +40,7 @@
     },
     {
       "route": "/api/RemoveStandard",
-      "allowedRoles": ["admin"]
+      "allowedRoles": ["admin","standardeditor"]
     },
     {
       "route": "/api/add*",
