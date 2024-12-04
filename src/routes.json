@@ -908,12 +908,6 @@
     "allowedRoles": ["admin", "editor", "standardeditor", "readonly"]
   },
   {
-    "path": "/email/reports/phishing-policies",
-    "name": "Phishing Policies",
-    "component": "views/email-exchange/reports/PhishingPoliciesList",
-    "allowedRoles": ["admin", "editor", "standardeditor", "readonly"]
-  },
-  {
     "path": "/email/reports/antiphishing-filters",
     "name": "Anti Phishing Filters",
     "component": "views/email-exchange/reports/AntiPhishingFilters",
