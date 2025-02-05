@@ -1,7 +1,19 @@
 {
   "routes": [
     {
-      "route": "/static/*",
+      "route": "_next/static/*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "*.{png,jpg,gif,xml,ico,css,js}",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "/assets/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
       }
@@ -24,35 +36,39 @@
     },
     {
       "route": "/api/ExecSAMSetup",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
-      "route": "/api/AddStandardsDeploy",
-      "allowedRoles": ["admin", "standardeditor"]
+      "route": "/api/AddStandardTemplate",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/RemoveStandardTemplate",
+      "allowedRoles": ["admin"]
     },
     {
       "route": "/LogoutRedirect",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/404",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/api/RemoveStandard",
-      "allowedRoles": ["admin","standardeditor"]
+      "allowedRoles": ["admin"]
     },
     {
       "route": "/api/add*",
-      "allowedRoles": ["admin", "editor", "standardeditor"]
+      "allowedRoles": ["admin", "editor"]
     },
     {
       "route": "/api/edit*",
-      "allowedRoles": ["admin", "editor", "standardeditor"]
+      "allowedRoles": ["admin", "editor"]
     },
     {
       "route": "/api/ExecSendPush",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly"]
+      "allowedRoles": ["admin", "editor", "readonly"]
     },
     {
       "route": "/api/ExecExcludeTenant",
@@ -60,11 +76,11 @@
     },
     {
       "route": "/api/Exec*",
-      "allowedRoles": ["admin", "editor", "standardeditor"]
+      "allowedRoles": ["admin", "editor"]
     },
     {
       "route": "/api/Remove*",
-      "allowedRoles": ["admin", "editor", "standardeditor"]
+      "allowedRoles": ["admin", "editor"]
     },
     {
       "route": "/cipp/*",
@@ -72,28 +88,39 @@
     },
     {
       "route": "/tenant/standards/*",
-      "allowedRoles": ["admin", "standardeditor"]
+      "allowedRoles": ["admin"]
     },
     {
       "route": "/",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "reader", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
     },
     {
       "route": "/api/Public*",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "reader", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
     {
       "route": "*",
-      "allowedRoles": ["admin", "editor", "standardeditor", "readonly", "reader"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
   ],
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["/static/*.{png,jpg,gif}", "/css/*"]
+    "exclude": [
+      "_next/static/*",
+      "/css/*",
+      "public/*",
+      "assets/*",
+      "favicon.ico",
+      "robots.txt",
+      "sitemap.xml",
+      "manifest.json"
+    ]
   },
   "responseOverrides": {
     "401": {
-      "rewrite": "/401"
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=.referrer",
+      "statusCode": 302,
+      "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
     },
     "403": {
       "rewrite": "/403"
